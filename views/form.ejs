@@ -7,25 +7,19 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
-      background: #f0f2f5;
+      background: linear-gradient(to right, #ffecd2, #fcb69f);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .form-container {
       max-width: 720px;
-      margin: 50px auto;
+      margin: 50px auto 80px;
       background: #fff;
-      padding: 35px;
+      padding: 35px 40px;
       border-radius: 15px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border-top: 6px solid #ff6f00;
       animation: fadeIn 0.8s ease-in-out;
-    }
-
-    @media (max-width: 576px) {
-      .form-container {
-        padding: 20px;
-        margin: 20px auto;
-      }
     }
 
     @keyframes fadeIn {
@@ -33,26 +27,16 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .form-label {
-      font-weight: 500;
-    }
-
     .btn-primary {
+      background-color: #ff6f00;
+      border-color: #ff6f00;
       transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
     .btn-primary:hover {
-      background-color: #0056b3;
+      background-color: #e65100;
+      border-color: #e65100;
       transform: scale(1.02);
-    }
-
-    .alert {
-      animation: slideDown 0.5s ease-out;
-    }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-15px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .photo-preview {
@@ -62,77 +46,121 @@
       border-radius: 10px;
       object-fit: cover;
     }
+
+    footer {
+      margin-top: 40px;
+      color: #555;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="form-container">
+      <!-- Themed Header with Logo -->
+      <div class="text-center mb-4">
+        <img src="/gallery/logo.png" alt="Dhol Tasha Logo" height="150" />
+        <h2 class="mt-3 fw-bold" style="color:#ff6f00;">Admission Form 2025</h2>
+      </div>
+
       <% if (typeof submissionCount !== 'undefined') { %>
-        <div class="alert alert-info text-center">
+        <div class="alert alert-info text-center" style="background-color:#ff6f00;opacity:1;">
           Total Valid Submissions: <strong><%= submissionCount %></strong>
         </div>
       <% } %>
 
-      <h2 class="mb-4 text-center">Swarajya Dhol Tasha Pathak Admission Form 2025</h2>
       <div class="mb-4 p-3 border rounded bg-light">
         <form action="/search" method="GET" class="d-flex" aria-label="Search Form">
-          <input type="email" name="email" placeholder="Enter email to search record" class="form-control me-2" required aria-label="Search by email" />
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter email to search record"
+            class="form-control me-2"
+            required
+            aria-label="Search by email"
+          />
           <button type="submit" class="btn btn-outline-primary">Search</button>
         </form>
       </div>
 
-      <% if(message){ %>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <%= message %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      <% } %>
+      <div aria-live="polite" role="alert">
+        <% if(message){ %>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <%= message %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+      </div>
 
-      <form action="<%= formAction %>" method="POST" enctype="multipart/form-data" novalidate aria-label="Admission Form">
-        <div class="mb-3">
-          <label for="name" class="form-label">Name *</label>
-          <input type="text" class="form-control" id="name" name="name" value="<%= data.name || '' %>" required aria-describedby="nameHelp" />
-          <div id="nameHelp" class="form-text">Please enter your full name.</div>
+      <form action="<%= formAction %>" method="POST" enctype="multipart/form-data" novalidate aria-label="Admission Form" class="needs-validation">
+        <!-- Floating Label Inputs -->
+
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="name" name="name" placeholder="Full Name" value="<%= data.name || '' %>" required aria-required="true" />
+          <label for="name" data-bs-toggle="tooltip" title="Please enter your full name">Name *</label>
           <div class="invalid-feedback">Please enter your name.</div>
         </div>
 
-        <div class="mb-3">
-          <label for="email" class="form-label">Email *</label>
+        <div class="form-floating mb-3">
           <input
-              type="email"
-              class="form-control"
-              id="email"
-              name="email"
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-              value="<%= data.email || '' %>"
-              required
-              aria-required="true"
-              <%= editing ? 'readonly' : '' %>
-/>
-<div class="invalid-feedback">Please enter a valid email address.</div>
-
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            placeholder="Email Address"
+            value="<%= data.email || '' %>"
+            required
+            aria-required="true"
+            <%= editing ? 'readonly' : '' %>
+            data-bs-toggle="tooltip"
+            title="Enter a valid email address"
+          />
+          <label for="email">Email *</label>
+          <div class="invalid-feedback">Please enter a valid email address.</div>
         </div>
 
-        <div class="mb-3">
-          <label for="contact" class="form-label">Contact *</label>
-          <input type="tel" class="form-control" id="contact" name="contact" pattern="[0-9]{10}" value="<%= data.contact || '' %>" required aria-required="true" aria-describedby="contactHelp" />
-          <div id="contactHelp" class="form-text">10-digit mobile number only.</div>
+        <div class="form-floating mb-3">
+          <input
+            type="tel"
+            class="form-control"
+            id="contact"
+            name="contact"
+            placeholder="10-digit Contact Number"
+            pattern="[0-9]{10}"
+            value="<%= data.contact || '' %>"
+            required
+            aria-required="true"
+            data-bs-toggle="tooltip"
+            title="Enter a valid 10-digit contact number"
+          />
+          <label for="contact">Contact *</label>
           <div class="invalid-feedback">Please enter a valid 10-digit contact number.</div>
         </div>
 
-        <div class="mb-3">
-          <label for="parentName" class="form-label">Parent Name</label>
-          <input type="text" class="form-control" id="parentName" name="parentName" value="<%= data.parentName || '' %>" />
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="parentName" name="parentName" placeholder="Parent Name" value="<%= data.parentName || '' %>" />
+          <label for="parentName">Parent Name</label>
         </div>
 
-        <div class="mb-3">
-          <label for="parentContact" class="form-label">Parent Contact</label>
-          <input type="tel" class="form-control" id="parentContact" name="parentContact" pattern="[0-9]{10}" value="<%= data.parentContact || '' %>" />
+        <div class="form-floating mb-3">
+          <input
+            type="tel"
+            class="form-control"
+            id="parentContact"
+            name="parentContact"
+            placeholder="Parent Contact"
+            pattern="[0-9]{10}"
+            value="<%= data.parentContact || '' %>"
+            data-bs-toggle="tooltip"
+            title="Parent contact (optional 10-digit number)"
+          />
+          <label for="parentContact">Parent Contact</label>
+          <div class="invalid-feedback">Please enter a valid 10-digit number.</div>
         </div>
 
         <div class="mb-3">
           <label for="address" class="form-label">Address</label>
-          <textarea class="form-control" id="address" name="address" rows="2"><%= data.address || '' %></textarea>
+          <textarea class="form-control" id="address" name="address" rows="2" placeholder="Address"><%= data.address || '' %></textarea>
         </div>
 
         <div class="mb-3">
@@ -154,7 +182,7 @@
 
         <div class="mb-3">
           <label for="vadya" class="form-label">Interested Vadya</label>
-          <select class="form-select" id="vadya" name="vadya">
+          <select class="form-select" id="vadya" name="vadya" aria-label="Select Vadya">
             <option value="">-- Select Vadya --</option>
             <option value="Dhwaj" <%= data.vadya === 'Dhwaj' ? 'selected' : '' %>>Dhwaj</option>
             <option value="Dhol" <%= data.vadya === 'Dhol' ? 'selected' : '' %>>Dhol</option>
@@ -164,7 +192,7 @@
 
         <div class="mb-3">
           <label for="reference" class="form-label">Admission Reference</label>
-          <select class="form-select" id="reference" name="reference">
+          <select class="form-select" id="reference" name="reference" aria-label="Select Admission Reference">
             <option value="">-- Select --</option>
             <option value="Friend" <%= data.reference === 'Friend' ? 'selected' : '' %>>Friend</option>
             <option value="Whatsapp" <%= data.reference === 'Whatsapp' ? 'selected' : '' %>>Whatsapp</option>
@@ -174,16 +202,42 @@
 
         <div class="mb-3">
           <label for="photo" class="form-label">Passport Photo</label>
-          <input class="form-control" type="file" id="photo" name="photo" accept="image/*" <%= editing ? '' : 'required' %> />
-          <img id="photoPreview" class="photo-preview" src="<%= data.photo || '' %>" alt="<%= data.name ? data.name + '\'s uploaded photo' : 'Uploaded photo preview' %>" style="<%= data.photo ? '' : 'display: none;' %>" />
+          <input
+            class="form-control"
+            type="file"
+            id="photo"
+            name="photo"
+            accept="image/*"
+            <%= editing ? '' : 'required' %>
+            onchange="previewPhoto(event)"
+            aria-describedby="photoHelp"
+          />
+          <div id="photoHelp" class="form-text">Upload a clear passport size photo</div>
+          <img
+            id="photoPreview"
+            class="photo-preview"
+            src="<%= data.photo || '' %>"
+            alt="Photo preview"
+            style="<%= data.photo ? '' : 'display: none;' %>"
+          />
         </div>
 
         <input type="hidden" name="editing" value="<%= editing %>">
         <input type="hidden" name="existingPhoto" value="<%= data.photo || '' %>">
 
         <button type="submit" class="btn btn-primary w-100" id="submitBtn">Submit</button>
+
+        <!-- Progress bar on submit -->
+        <div id="progressBar" class="progress mt-3 d-none" aria-hidden="true">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+        </div>
       </form>
     </div>
+
+    <footer class="text-center">
+      &copy; 2025 Swarajya Dhol Tasha Pathak | Designed by Sagar Gaikwad
+    </footer>
+  </br>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -191,43 +245,35 @@
     (() => {
       'use strict';
 
-      const form = document.querySelector('form');
+      // Enable Bootstrap tooltips
+      const tooltipTriggerList = [...document.querySelectorAll('[data-bs-toggle="tooltip"]')];
+      tooltipTriggerList.map(tip => new bootstrap.Tooltip(tip));
+
+      const form = document.querySelector('form.needs-validation');
       const submitBtn = document.getElementById('submitBtn');
+      const progressBar = document.getElementById('progressBar');
 
       form.addEventListener('submit', event => {
         if (!form.checkValidity()) {
           event.preventDefault();
           event.stopPropagation();
           form.classList.add('was-validated');
-
-          const firstInvalid = form.querySelector(':invalid');
-          if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
           submitBtn.disabled = true;
           submitBtn.innerHTML = 'Submitting... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-        }
-      });
-
-      const photoInput = document.getElementById('photo');
-      const photoLabel = document.querySelector("label[for='photo']");
-
-      photoInput.addEventListener('change', function (event) {
-        const file = this.files[0];
-        if (file) {
-          if (file.size > 2 * 1024 * 1024) {
-            alert('Photo must be less than 2MB.');
-            this.value = '';
-            document.getElementById('photoPreview').style.display = 'none';
-            photoLabel.textContent = 'Passport Photo';
-            return;
-          }
-          const photo = document.getElementById('photoPreview');
-          photo.src = URL.createObjectURL(file);
-          photo.style.display = 'block';
-          photoLabel.textContent = `Selected: ${file.name}`;
+          progressBar.classList.remove('d-none');
         }
       });
     })();
+
+    function previewPhoto(event) {
+      const photo = document.getElementById('photoPreview');
+      const file = event.target.files[0];
+      if (file) {
+        photo.src = URL.createObjectURL(file);
+        photo.style.display = 'block';
+      }
+    }
   </script>
 
   <% if (showPopup) { %>
