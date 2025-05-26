@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admission Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #f0f2f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-container {
+      max-width: 720px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 35px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @media (max-width: 576px) {
+      .form-container {
+        padding: 20px;
+        margin: 20px auto;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      transform: scale(1.02);
+    }
+
+    .alert {
+      animation: slideDown 0.5s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .photo-preview {
+      display: block;
+      max-height: 150px;
+      margin-top: 10px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <% if (typeof submissionCount !== 'undefined') { %>
+        <div class="alert alert-info text-center">
+          Total Valid Submissions: <strong><%= submissionCount %></strong>
+        </div>
+      <% } %>
+
+      <h2 class="mb-4 text-center">Swarajya Dhol Tasha Pathak Admission Form 2025</h2>
+      <div class="mb-4 p-3 border rounded bg-light">
+        <form action="/search" method="GET" class="d-flex" aria-label="Search Form">
+          <input type="email" name="email" placeholder="Enter email to search record" class="form-control me-2" required aria-label="Search by email" />
+          <button type="submit" class="btn btn-outline-primary">Search</button>
+        </form>
+      </div>
+
+      <% if(message){ %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= message %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+
+      <form action="<%= formAction %>" method="POST" enctype="multipart/form-data" novalidate aria-label="Admission Form">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name *</label>
+          <input type="text" class="form-control" id="name" name="name" value="<%= data.name || '' %>" required aria-describedby="nameHelp" />
+          <div id="nameHelp" class="form-text">Please enter your full name.</div>
+          <div class="invalid-feedback">Please enter your name.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email *</label>
+          <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              value="<%= data.email || '' %>"
+              required
+              aria-required="true"
+              <%= editing ? 'readonly' : '' %>
+/>
+<div class="invalid-feedback">Please enter a valid email address.</div>
+
+        </div>
+
+        <div class="mb-3">
+          <label for="contact" class="form-label">Contact *</label>
+          <input type="tel" class="form-control" id="contact" name="contact" pattern="[0-9]{10}" value="<%= data.contact || '' %>" required aria-required="true" aria-describedby="contactHelp" />
+          <div id="contactHelp" class="form-text">10-digit mobile number only.</div>
+          <div class="invalid-feedback">Please enter a valid 10-digit contact number.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="parentName" class="form-label">Parent Name</label>
+          <input type="text" class="form-control" id="parentName" name="parentName" value="<%= data.parentName || '' %>" />
+        </div>
+
+        <div class="mb-3">
+          <label for="parentContact" class="form-label">Parent Contact</label>
+          <input type="tel" class="form-control" id="parentContact" name="parentContact" pattern="[0-9]{10}" value="<%= data.parentContact || '' %>" />
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label">Address</label>
+          <textarea class="form-control" id="address" name="address" rows="2"><%= data.address || '' %></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="dob" class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" id="dob" name="dob" min="1970-01-01" max="2010-12-31" value="<%= data.dob || '' %>" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Gender</label><br />
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="gender" id="male" value="Male" <%= data.gender === 'Male' ? 'checked' : '' %> />
+            <label class="form-check-label" for="male">Male</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="gender" id="female" value="Female" <%= data.gender === 'Female' ? 'checked' : '' %> />
+            <label class="form-check-label" for="female">Female</label>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="vadya" class="form-label">Interested Vadya</label>
+          <select class="form-select" id="vadya" name="vadya">
+            <option value="">-- Select Vadya --</option>
+            <option value="Dhwaj" <%= data.vadya === 'Dhwaj' ? 'selected' : '' %>>Dhwaj</option>
+            <option value="Dhol" <%= data.vadya === 'Dhol' ? 'selected' : '' %>>Dhol</option>
+            <option value="Tasha" <%= data.vadya === 'Tasha' ? 'selected' : '' %>>Tasha</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="reference" class="form-label">Admission Reference</label>
+          <select class="form-select" id="reference" name="reference">
+            <option value="">-- Select --</option>
+            <option value="Friend" <%= data.reference === 'Friend' ? 'selected' : '' %>>Friend</option>
+            <option value="Whatsapp" <%= data.reference === 'Whatsapp' ? 'selected' : '' %>>Whatsapp</option>
+            <option value="Instagram" <%= data.reference === 'Instagram' ? 'selected' : '' %>>Instagram</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="photo" class="form-label">Passport Photo</label>
+          <input class="form-control" type="file" id="photo" name="photo" accept="image/*" <%= editing ? '' : 'required' %> />
+          <img id="photoPreview" class="photo-preview" src="<%= data.photo || '' %>" alt="<%= data.name ? data.name + '\'s uploaded photo' : 'Uploaded photo preview' %>" style="<%= data.photo ? '' : 'display: none;' %>" />
+        </div>
+
+        <input type="hidden" name="editing" value="<%= editing %>">
+        <input type="hidden" name="existingPhoto" value="<%= data.photo || '' %>">
+
+        <button type="submit" class="btn btn-primary w-100" id="submitBtn">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      const form = document.querySelector('form');
+      const submitBtn = document.getElementById('submitBtn');
+
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+          form.classList.add('was-validated');
+
+          const firstInvalid = form.querySelector(':invalid');
+          if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = 'Submitting... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        }
+      });
+
+      const photoInput = document.getElementById('photo');
+      const photoLabel = document.querySelector("label[for='photo']");
+
+      photoInput.addEventListener('change', function (event) {
+        const file = this.files[0];
+        if (file) {
+          if (file.size > 2 * 1024 * 1024) {
+            alert('Photo must be less than 2MB.');
+            this.value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+            photoLabel.textContent = 'Passport Photo';
+            return;
+          }
+          const photo = document.getElementById('photoPreview');
+          photo.src = URL.createObjectURL(file);
+          photo.style.display = 'block';
+          photoLabel.textContent = `Selected: ${file.name}`;
+        }
+      });
+    })();
+  </script>
+
+  <% if (showPopup) { %>
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="successModalLabel">Success</h5>
+          </div>
+          <div class="modal-body">
+            <%= popupMessage %>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="window.location.href='/'">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+      successModal.show();
+    </script>
+  <% } %>
+</body>
+</html>
