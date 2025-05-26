@@ -52,6 +52,40 @@
       color: #555;
       font-size: 0.9rem;
     }
+    .logo-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.logo-image {
+  max-width: 180px;
+  width: 50vw; /* Responsive width */
+  height: auto;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+}
+
+/* Smaller screens adjustments */
+@media (max-width: 480px) {
+  .logo-image {
+    max-width: 140px;
+    width: 60vw;
+  }
+
+  .form-title {
+    font-size: 1.25rem;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -59,7 +93,7 @@
     <div class="form-container">
       <!-- Themed Header with Logo -->
       <div class="text-center mb-4">
-        <img src="/gallery/logo.png" alt="Dhol Tasha Logo" height="150" />
+        <img src="/gallery/logo.png" alt="Dhol Tasha Logo" class="logo-image" />
         <h2 class="mt-3 fw-bold" style="color:#ff6f00;">Admission Form 2025</h2>
       </div>
 
